@@ -4,6 +4,7 @@ function Home() {
     <div>
       <h1>React Router DOM Setup</h1>
         {/* Comment */}
+        {/* Another One */}
     </div>
   );
 }
