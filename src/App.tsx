@@ -3,7 +3,6 @@ function Home() {
   return (
     <div>
       <h1>React Router DOM Setup</h1>
-        {/* Comment */}
     </div>
   );
 }
