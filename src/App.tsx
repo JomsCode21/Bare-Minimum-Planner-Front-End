@@ -1,21 +1,35 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import LandingPage from "./pages/LandingPage";
-// function Home() {
-//   return (
-//     <div>
-//       <h1 className="text-2xl text-center">React Router DOM Setup</h1>
-//     </div>
-//   );
-// }
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import Dashboard from "./pages/Dashboard";
 function App() {
   const router = createBrowserRouter([
-    // {
-    //   path: "/",
-    //   Component: Home,
-    // },
     {
       path: "/",
       Component: LandingPage,
+    },
+    {
+      path: "/login",
+      Component: LoginPage,
+    },
+    {
+      path: "/register",
+      Component: RegisterPage
+    },
+    {
+      path: "/forgotpassword",
+      Component: ForgotPasswordPage
+    },
+    {
+      path: "/resetpassword",
+      Component: ResetPasswordPage
+    },
+    {
+      path: "/dashboard",
+      Component: Dashboard
     },
   ]);
   return (
