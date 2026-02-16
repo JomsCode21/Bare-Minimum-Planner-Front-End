@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 function App() {
   const router = createBrowserRouter([
     {
@@ -28,8 +29,13 @@ function App() {
       Component: ResetPasswordPage
     },
     {
-      path: "/dashboard",
-      Component: Dashboard
+      element: <ProtectedRoutes />,
+      children: [
+        {
+          path: "/dashboard",
+          Component: Dashboard
+        }
+      ]
     },
   ]);
   return (

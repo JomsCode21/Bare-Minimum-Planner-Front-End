@@ -15,7 +15,7 @@ function RegisterCard() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false); // For prevention of multiple clicks
 
   // Handling Logic for  Registration
@@ -35,16 +35,21 @@ function RegisterCard() {
       setLoading(true);
 
       //Send data to the backend
-      const response = await axios.post("api/users/register", {
+      await axios.post("/api/register", {
         name, email, password,
       });
 
       // Success Notification
       alert("Registration successful! Please login.");
+      navigate("/login");
 
-    }catch (error: any) {
-    console.error("Registration Error.", error);
-    alert(error.response?.data?.message || "Registration failed. Try again.");
+    }catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || 'Registration failed.');
+        console.log(name, email, password);
+      } else {
+        alert ("An unexpected error occured.");
+      }
     } finally {
       setLoading(false);
     }
@@ -72,28 +77,40 @@ function RegisterCard() {
           type="text"
           placeholder="Enter your name"
           value={name}
-          onChange={(e: any) => setName(e.target.value)}
+          name="name"
+          id="name"
+          autoComplete="name"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
         />
         <InputField
           icon={<IoMdMail />}
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e: any) => setEmail(e.target.value)}
+          name="email"
+          id="email"
+          autoComplete="email"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
         />
         <InputField
           icon={<FaKey />}
           type="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e: any) => setPassword(e.target.value)}
+          name="password"
+          id="password"
+          autoComplete="new-password"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
         />
         <InputField
           icon={<FaKey />}
           type="password"
           placeholder="Confirm your password"
           value={confirmPassword}
-          onChange={(e: any) => setConfirmPassword(e.target.value)}
+          name="confirmPassword"
+          id="confirmPassword"
+          autoComplete="new-password"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
         />
       </div>
 
