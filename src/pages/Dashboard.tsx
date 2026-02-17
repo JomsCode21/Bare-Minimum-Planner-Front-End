@@ -10,6 +10,9 @@ import DashboardCard, { type Task } from "@/utils/DashboardCard";
 import AddTaskModal from "@/components/AddTaskModal";
 import DeleteTaskModal from "@/components/DeleteTaskModal";
 import EditTaskModal from "@/components/EditTaskModal";
+import ViewTaskModal from "@/components/ViewTaskModal";
+import DeleteSuccessModal from "@/components/DeletesuccessModal";
+import { toast } from "react-toastify";
 
 interface User {
     id: string;
@@ -29,10 +32,16 @@ function Dashboard() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [deleteTaskTitle, setDeleteTaskTitle] = useState("");
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     // Checking authentication
     useEffect(() => {
@@ -44,6 +53,12 @@ function Dashboard() {
             fetchTasks();
         }
     }, [navigate]);
+
+    // For Viewing Task
+    const handleViewTask = (task: Task) => {
+        setSelectedTask(task);
+        setIsViewModalOpen(true);
+    };
 
     const fetchTasks = async () => {
         try {
@@ -98,9 +113,16 @@ function Dashboard() {
     const executeDelete = async () => {
         if (!taskToDelete) return;
 
+        const task = tasks.find((t) => t._id === taskToDelete);
+        const title = task ? task.title : "Task";
+
         try {
             await axios.delete(`/api/tasks/${taskToDelete}`);
             setTasks(tasks.filter((task) => task._id !== taskToDelete));
+            setIsDeleteModalOpen(false);
+
+            setDeleteTaskTitle(title);
+            setShowSuccessModal(true);
         } catch (error) {
             console.error("Error deleting task:", error);
         } finally {
@@ -124,9 +146,16 @@ function Dashboard() {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("user");
-        navigate("/login");
+    const handleLogout = async () => {
+
+        try {
+            await axios.post("/api/users/logout");
+            localStorage.removeItem("user");
+            navigate("/login");
+        } catch(error) {
+            console.error("Logout failed.",error);
+            toast.error("Failed to logout properly.");
+        }
     }
 
     return(
@@ -153,7 +182,7 @@ function Dashboard() {
                         <h2 className="text-xl font-normal text-txt">Bare Minimum Tasks</h2>
                         <p className="text-sm text-[#555] italic">“Just enough to survive.”</p>
                     </div>
-                    <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+                    <div className="flex-1 p-4 overflow-y-auto custom-scrollbar max-h-115">
                         {tasks.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-txt/500 opacity-60">
                                 <p className="text-lg">"Empty. As intended."</p>
@@ -162,11 +191,15 @@ function Dashboard() {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 {tasks.map((task) => (
-                                    <DashboardCard key={task._id}
-                                        task={task}
-                                        onDelete={confirmDelete}
-                                        onToggle={handleToggleComplete}
-                                        onEdit={openEditModal} />
+                                    <div key={task._id}
+                                        onClick={() => handleViewTask(task)}
+                                        className="cursor-pointer hover:opacity-90 active:scale-[0.99] transition-all duration-200">
+                                            <DashboardCard key={task._id}
+                                                task={task}
+                                                onDelete={confirmDelete}
+                                                onToggle={handleToggleComplete}
+                                                onEdit={openEditModal} />
+                                    </div>
                                 ))}
                             </div>
                         )}
@@ -214,6 +247,18 @@ function Dashboard() {
                     isOpen={isDeleteModalOpen}
                     onClose={() => setIsDeleteModalOpen(false)}
                     onConfirm={executeDelete} 
+                />
+
+                <ViewTaskModal 
+                    isOpen={isViewModalOpen}
+                    task={selectedTask}
+                    onClose={() => setIsViewModalOpen(false)}    
+                />
+
+                <DeleteSuccessModal 
+                    isOpen={showSuccessModal}
+                    taskTitle={deleteTaskTitle}
+                    onClose={() => setShowSuccessModal(false)}
                 />
             </div>
         </div>

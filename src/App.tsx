@@ -6,6 +6,14 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.withCredentials = true;
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -34,13 +42,14 @@ function App() {
         {
           path: "/dashboard",
           Component: Dashboard
-        }
+        },
       ]
     },
   ]);
   return (
     <div>
       <RouterProvider router={router} />
+      <ToastContainer position="top-center" autoClose={3000} theme="light" />
     </div>
   );
 }

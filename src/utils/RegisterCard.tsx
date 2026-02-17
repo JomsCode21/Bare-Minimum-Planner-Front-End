@@ -7,6 +7,7 @@ import InputField from "../components/InputField";
 import UniversalButton from "../components/UniversalButton";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function RegisterCard() {
   const navigate = useNavigate();
@@ -22,12 +23,12 @@ function RegisterCard() {
   const handleRegister = async () => {
     // Validation
     if (!name || !email || !password) {
-      alert("Please fill in all fields.");
+      toast.warn("Please fill in all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Password do not much");
+      toast.warn("Password do not match");
       return;
     }
 
@@ -40,15 +41,15 @@ function RegisterCard() {
       });
 
       // Success Notification
-      alert("Registration successful! Please login.");
+      toast.success("Registration successful! Please login.");
       navigate("/login");
 
     }catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || 'Registration failed.');
+        toast.error(error.response?.data?.message || 'Registration failed.');
         console.log(name, email, password);
       } else {
-        alert ("An unexpected error occured.");
+        toast.error ("An unexpected error occured.");
       }
     } finally {
       setLoading(false);

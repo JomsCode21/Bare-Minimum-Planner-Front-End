@@ -27,7 +27,7 @@ function EditTaskModal({ isOpen, onClose, task, onUpdate }: EditTaskModalProps) 
 
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 backdrop-blur-sm">
-            <div className="bg-linear-to-t from-primary to-bg2 rouded-[20px] w-full max-w-sm overflow-hidden shadow-2xl border-4 border-[#357abd]">
+            <div className="bg-linear-to-t from-primary to-bg2 rouded-[20px] w-full max-w-sm overflow-hidden shadow-2xl border-4 border-[#357abd] rounded-[20px]">
 
                 <div className="bg-[#8ab4f8] p-4 text-center border-b border-[#6ea8fe]">
                     <h2 className="text-lg font-bold text-txt">Polish the Bare Minimum</h2>
@@ -44,7 +44,7 @@ function EditTaskModal({ isOpen, onClose, task, onUpdate }: EditTaskModalProps) 
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-[#333] mb-2 ml-2">Extra Context</label>
+                        <label className="block text-sm font-bold text-[#333] mb-2 ml-2">Description</label>
                         <textarea
                             className="w-full bg-bg p-3 rounded-[20px] text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8] resize-none h-20 pt-4"
                             placeholder="Extra Context (Optional, Obviously)"

@@ -7,6 +7,7 @@ import { IoMdMail } from "react-icons/io";
 import { SiApple } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
+import { toast } from "react-toastify";
 
 function LoginCard() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function LoginCard() {
   // Handle Login Logic
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please fill in both email and password.");
+      toast.warning("Please fill in both email and password.");
       return;
     }
 
@@ -27,15 +28,15 @@ function LoginCard() {
       setLoading(true);
 
       // Send Login Request to Backend
-      const response = await axios.post("http://localhost:5000/api/users/login", {
+      const response = await axios.post("/api/users/login", {
         email,
         password,
-      }, { withCredentials: true });
+      });
 
       // Save user info to LocalStorage 
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Login Successful!");
+      toast.success("Login Successful!");
       
       // Navigate to Dashboard
       navigate("/dashboard");
@@ -44,10 +45,10 @@ function LoginCard() {
       console.error("Login Error:", error);
 
       if (axios.isAxiosError(error)) {
-        // Show specific error from backend (e.g., "Invalid credentials")
-        alert(error.response?.data?.message || "Login failed.");
+        // Show specific error from backend
+        toast.error(error.response?.data?.message || "Login failed.");
       } else {
-        alert("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);

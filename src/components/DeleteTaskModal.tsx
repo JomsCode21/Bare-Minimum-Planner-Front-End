@@ -44,7 +44,7 @@ function DeleteTaskModal({ isOpen, onClose, onConfirm }: DeleteTaskModalProps) {
                         className="flex-1 bg-bg  hover:bg-white text-txt font-medium py-3 rounded-[20px] shadow-[0_4px_0_rgb(0,0,0,0.2)] active:shadow-none active:translate-y-1 transition">
                             {loading ? "..." : "Yes"}
                     </button>
-                    <button onClick={handleConfirm}
+                    <button onClick={onClose}
                         disabled={loading}
                         className="flex-1 bg-bg  hover:bg-white text-txt font-medium py-3 rounded-[20px] shadow-[0_4px_0_rgb(0,0,0,0.2)] active:shadow-none active:translate-y-1 transition">
                             {loading ? "..." : "No"}
