@@ -1,4 +1,4 @@
-import LandingPageButton from "@/components/Buttons";
+import LandingPageButton from "@/components/ui/Buttons";
 import logo from "../assets/Logo+tagline.png";
 
 function LandingPage() {

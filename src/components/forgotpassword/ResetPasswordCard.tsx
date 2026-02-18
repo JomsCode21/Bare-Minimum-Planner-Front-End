@@ -1,11 +1,10 @@
+import InputField from "@/components/ui/InputField";
+import axios, { isAxiosError } from "axios";
+import { useState } from "react";
 import { FaKey } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import InputField from "../components/InputField";
-import UniversalButton from "../components/UniversalButton";
-import { useState } from "react";
-import axios, { isAxiosError } from "axios";
 import { toast } from "react-toastify";
-
+import UniversalButton from "../ui/UniversalButton";
 
 interface ResetPasswordCardProps {
   userId: string;
@@ -24,7 +23,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
       toast.warn("Please fill in both fields.");
       return;
     }
-    
+
     if (newPassword !== confirmPassword) {
       toast.warn("Passwords do not match!");
       return;
@@ -34,7 +33,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
       setLoading(true);
 
       await axios.put(`/api/users/${userId}`, {
-        password: newPassword
+        password: newPassword,
       });
 
       toast.success("Password reset successful!");
@@ -42,7 +41,9 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Error resetting password.");
+        toast.error(
+          error.response?.data?.message || "Error resetting password.",
+        );
       } else {
         toast.error("An unexpected error occured");
       }
@@ -65,7 +66,9 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
           type="password"
           placeholder="Enter your new password"
           value={newPassword}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setNewPassword(e.target.value)
+          }
         />
       </div>
 
@@ -76,7 +79,9 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
           type="password"
           placeholder="Confirm your new password"
           value={confirmPassword}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setConfirmPassword(e.target.value)
+          }
         />
       </div>
 

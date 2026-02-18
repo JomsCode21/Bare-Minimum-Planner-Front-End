@@ -1,5 +1,5 @@
-import logo from "../assets/Logo+tagline.png";
-import ForgotPasswordCard from "../utils/ForgotPasswordCard";
+import logo from "@/assets/Logo+tagline.png";
+import ForgotPasswordCard from "../../components/forgotpassword/ForgotPasswordCard";
 
 function ForgotPasswordPage() {
   return (

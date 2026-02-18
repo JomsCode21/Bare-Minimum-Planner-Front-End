@@ -1,6 +1,6 @@
 interface UniversalButtonProps {
     content: string;
-    onClick: () => void
+    onClick?: () => void;
     type?: "submit" | "button";
 }
 

@@ -1,51 +1,56 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
-import LandingPage from "./pages/LandingPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import Dashboard from "./pages/Dashboard";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+import { useEffect } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Make sure to import from react-router-dom
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import axios from "axios";
+import { useAuthStore } from "@/store/authStore";
+
+// Pages & Components
+import Dashboard from "./pages/dashboard/Dashboard";
+import ForgotPasswordPage from "./pages/forgotpassword/ForgotPasswordPage";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/login/LoginPage";
+import RegisterPage from "./pages/register/RegisterPage";
+import ResetPasswordPage from "./pages/forgotpassword/ResetPasswordPage";
+import ProtectedRoutes from "./components/routes/ProtectedRoutes";
+import PublicRoutes from "./components/routes/PublicRoutes";
 
 axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
 
-function App() {
-  const router = createBrowserRouter([
+const router = createBrowserRouter([
     {
       path: "/",
       Component: LandingPage,
     },
     {
-      path: "/login",
-      Component: LoginPage,
-    },
-    {
-      path: "/register",
-      Component: RegisterPage
-    },
-    {
-      path: "/forgotpassword",
-      Component: ForgotPasswordPage
-    },
-    {
-      path: "/resetpassword",
-      Component: ResetPasswordPage
+      element: <PublicRoutes />,
+      children: [
+        {path: "/login", element: <LoginPage />},
+        {path: "/register", element: <RegisterPage />},
+        {path: "/forgotpassword", element: <ForgotPasswordPage />},
+        {path: "/resetpassword", element: <ResetPasswordPage />},
+      ]
     },
     {
       element: <ProtectedRoutes />,
       children: [
         {
           path: "/dashboard",
-          Component: Dashboard
+          element: <Dashboard />,
         },
-      ]
+      ],
     },
   ]);
+
+function App() {
+  const { checkAuth } = useAuthStore();
+  
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
     <div>
       <RouterProvider router={router} />

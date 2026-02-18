@@ -1,10 +1,10 @@
+import InputField from "@/components/ui/InputField";
+import axios, { isAxiosError } from "axios";
+import { useState } from "react";
 import { IoMdMail } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import InputField from "../components/InputField";
-import UniversalButton from "../components/UniversalButton";
-import { useState } from "react";
-import axios, { isAxiosError } from "axios";
 import { toast } from "react-toastify";
+import UniversalButton from "../ui/UniversalButton";
 
 function ForgotPasswordCard() {
   const navigate = useNavigate();
@@ -22,13 +22,15 @@ function ForgotPasswordCard() {
       setLoading(true);
 
       await axios.post("/api/users/forgotpassword", {
-        email
+        email,
       });
       navigate("/login");
     } catch (error: unknown) {
       console.error(error);
       if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "User not found using this email");
+        toast.error(
+          error.response?.data?.message || "User not found using this email",
+        );
       } else {
         toast.error("An unexpected error occured");
       }
@@ -37,7 +39,7 @@ function ForgotPasswordCard() {
     }
   };
 
-  return(
+  return (
     <div className="bg-bg w-87.5 rounded-[20px] p-8 flex flex-col items-center shadow-lg text-center">
       <h3 className="font-bold text-txt text-[16.4px] mb-4">
         "It happens. Let's get you back in."
@@ -49,15 +51,17 @@ function ForgotPasswordCard() {
           type="email"
           icon={<IoMdMail />}
           placeholder="Enter your email"
-          value={email} 
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          value={email}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
         />
       </div>
-      
+
       <UniversalButton
         type="submit"
-        content={loading ? "Checking..." : "Find Account"} 
-        onClick={handleFindAccount} 
+        content={loading ? "Checking..." : "Find Account"}
+        onClick={handleFindAccount}
       />
     </div>
   );

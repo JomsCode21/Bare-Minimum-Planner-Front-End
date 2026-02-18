@@ -1,5 +1,5 @@
-import LoginCard from "@/utils/Logincard";
-import logo from "../assets/Logo+tagline.png";
+import LoginCard from "@/components/login/Logincard";
+import logo from "@/assets/Logo+tagline.png";
 
 function LoginPage() {
   return (

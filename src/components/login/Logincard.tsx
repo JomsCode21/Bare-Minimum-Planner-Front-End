@@ -1,16 +1,20 @@
-import UniversalButton from "@/components/UniversalButton";
-import { useState } from "react";
 import axios from "axios"; // Import Axios
+import { useState } from "react";
 import { FaFacebook, FaKey } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { IoMdMail } from "react-icons/io";
 import { SiApple } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
-import InputField from "../components/InputField";
 import { toast } from "react-toastify";
+import InputField from "../ui/InputField";
+import UniversalButton from "../ui/UniversalButton";
+
+import { useAuthStore } from "@/store/authStore";
 
 function LoginCard() {
   const navigate = useNavigate();
+
+  const { login } = useAuthStore();
 
   // State for inputs
   const [email, setEmail] = useState("");
@@ -18,7 +22,9 @@ function LoginCard() {
   const [loading, setLoading] = useState(false);
 
   // Handle Login Logic
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (!email || !password) {
       toast.warning("Please fill in both email and password.");
       return;
@@ -33,11 +39,8 @@ function LoginCard() {
         password,
       });
 
-      // Save user info to LocalStorage 
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
+      login(response.data.user);
       toast.success("Login Successful!");
-      
       // Navigate to Dashboard
       navigate("/dashboard");
 
@@ -71,42 +74,47 @@ function LoginCard() {
       </div>
 
       {/* Form Inputs */}
-      <div className="w-full space-y-4">
-        <InputField
-          icon={<IoMdMail />}
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          name="email"
-          id="email"
-          autoComplete="email"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-        />
-        <InputField
-          icon={<FaKey />}
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          name="password"
-          id="password"
-          autoComplete="current-password"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-        />
-      </div>
+      <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
+        <div className="w-full space-y-4">
+          <InputField
+            icon={<IoMdMail />}
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            name="email"
+            id="email"
+            autoComplete="email"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+          />
+          <InputField
+            icon={<FaKey />}
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            name="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+          />
+        </div>
 
-      <button
-        onClick={() => navigate("/forgotpassword")}
-        className="text-red-500 text-[14px] font-semibold self-end mt-2 mb-6 hover:underline"
-      >
-        Forgot Password
-      </button>
+        <button
+          onClick={() => navigate("/forgotpassword")}
+          className="text-red-500 text-[14px] font-semibold self-end mt-2 mb-6 hover:underline"
+        >
+          Forgot Password
+        </button>
 
-      {/* Login Button */}
-      <UniversalButton
-        content={loading ? "Logging in..." : "Login"}
-        type="submit"
-        onClick={handleLogin} // Triggers the function above
-      />
+        {/* Login Button */}
+        <UniversalButton
+          content={loading ? "Logging in..." : "Login"}
+          type="submit"
+        />
+      </form>
 
       <p className="text-sm my-4 font-bold"> --OR--</p>
 
