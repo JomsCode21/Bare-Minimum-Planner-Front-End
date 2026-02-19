@@ -1,12 +1,5 @@
-import { type Task } from "@/components/dashboard/DashboardCard";
 import { useState } from "react";
-
-interface EditTaskModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  task: Task | null;
-  onUpdate: (id: string, title: string, description: string) => Promise<void>;
-}
+import type { EditTaskModalProps } from "@/types/dashboard";
 
 function EditTaskModal({
   isOpen,
@@ -23,11 +16,15 @@ function EditTaskModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!task) return;
+    if (loading) return;
 
     setLoading(true);
-    await onUpdate(task._id, title, description);
-    setLoading(false);
-    onClose();
+    try {
+      await onUpdate(task._id, title, description);
+      onClose();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,6 +72,7 @@ function EditTaskModal({
             <button
               type="button"
               onClick={onClose}
+              disabled={loading}
               className="flex-1 bg-bg2 hover:bg-white text-txt font-bold py-3 rounded-full transition"
             >
               Cancel

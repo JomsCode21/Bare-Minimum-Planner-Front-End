@@ -1,59 +1,54 @@
 import { create } from "zustand";
-import api from "@/api/axios";
+import { persist } from "zustand/middleware"; // 👈 1. Import persist
+import type { AuthState, User } from "@/types/auth";
+import { checkAuth as checkAuthApi, logout as logoutApi } from "@/api/auth";
 
-// User looks like
-interface User {
-    id: string;
-    name: string;
-    email: string;
-}
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isCheckingAuth: true,
 
-// For storing State
-interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-    isCheckingAuth: boolean;
-
-    checkAuth: () => Promise<void>;
-    login: (user: User) => void;
-    logout: () => void;
-}
-
-export const useAuthStore = create<AuthState>((set) => ({
-
-    user: null,
-    isAuthenticated: false,
-    isCheckingAuth: true,
-
-    checkAuth: async () => {
+      checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
-            const response = await api.get("/api/users/check-auth");
-            set({
-                user: response.data.user,
-                isAuthenticated: true,
-                isCheckingAuth: false,
-            });
+          const response = await checkAuthApi();
+          set({
+            user: response.data.user,
+            isAuthenticated: true,
+            isCheckingAuth: false,
+          });
         } catch {
-            set({
-                user: null,
-                isAuthenticated: false,
-                isCheckingAuth: false,
-            });
+          // If the backend says "no cookie", wipe the persisted state!
+          set({
+            user: null,
+            isAuthenticated: false,
+            isCheckingAuth: false,
+          });
         }
-    },
+      },
 
-    login: (user: User) => {
+      login: (user: User) => {
         set({ user, isAuthenticated: true });
-    },
+      },
 
-    logout: async () => {
+      logout: async () => {
         try {
-            await api.post("/api/users/logout");
-            set({ user: null, isAuthenticated: false, isCheckingAuth: false });
+          await logoutApi();
+          set({ user: null, isAuthenticated: false, isCheckingAuth: false });
         } catch (error) {
-            console.error("Logout failed", error);
-            set({ user: null, isAuthenticated: false, isCheckingAuth:false });
+          console.error("Logout failed", error);
+          set({ user: null, isAuthenticated: false, isCheckingAuth: false });
         }
+      },
+    }),
+    {
+      name: "auth-storage",
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
     },
-}));
+  ),
+);

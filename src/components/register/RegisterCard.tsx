@@ -1,5 +1,5 @@
 import InputField from "@/components/ui/InputField";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { FaFacebook, FaKey } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
@@ -8,6 +8,9 @@ import { SiApple } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
+import { checkEmail, register } from "@/api/auth";
+import TermsModal from "./TermsModal";
+import { motion } from "framer-motion";
 
 function RegisterCard() {
   const navigate = useNavigate();
@@ -21,8 +24,9 @@ function RegisterCard() {
 
   // State for terms and condition
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
-  // State for chicking if email is existing
+  // State for checking if email is existing
   const [emailError, setEmailError] = useState("");
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
@@ -36,7 +40,7 @@ function RegisterCard() {
 
     try {
       setIsCheckingEmail(true);
-      const response = await axios.post("/api/users/check-email", { email });
+      const response = await checkEmail(email);
 
       if (response.data.exists) {
         setEmailError("This email is already used.");
@@ -50,21 +54,31 @@ function RegisterCard() {
     }
   };
 
-  // Handling Logic for  Registration
+  // Handling Logic for Registration
   const handleRegister = async () => {
     // Validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       toast.warn("Please fill in all fields.");
       return;
     }
 
-    if (!agreedToTerms) {
-      toast.warning("You must agree to the Terms and Condition");
+    if (emailError) {
+      toast.warn("Please fix the email error before signing up.");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.warn("Password must be at least 8 characters long.");
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.warn("Password do not match");
+      toast.warn("Passwords do not match.");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      toast.warning("You must agree to the Terms and Conditions.");
       return;
     }
 
@@ -72,17 +86,13 @@ function RegisterCard() {
       setLoading(true);
 
       //Send data to the backend
-      await axios.post("/api/users/register", {
-        name,
-        email,
-        password,
-      });
+      await register(name, email, password);
 
       // Success Notification
       toast.success("Registration successful! Please login.");
       navigate("/login");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Registration failed.");
         console.log(name, email, password);
       } else {
@@ -95,15 +105,27 @@ function RegisterCard() {
 
   return (
     <div className="bg-bg w-87.5 rounded-[40px] p-10 flex flex-col items-center shadow-lg">
-      {/* Toggle Button for Login and Register */}
-      <div className="flex bg-gray-300 rounded-full w-full mb-6 overflow-hidden">
+      
+      {/* Toggle Button (Sliding Animation) */}
+      <div className="relative flex bg-gray-300 rounded-full w-full mb-6 p-1 shadow-inner h-11">
+        {/* The Sliding Background Pill */}
+        <motion.div
+          initial={{ x: "-100%" }} // Fakes coming from the Login side
+          animate={{ x: 0 }}       // Slides perfectly into the Register side
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className="absolute top-1 bottom-1 right-1 w-[calc(50%-4px)] bg-primary rounded-full shadow-md"
+        />
+
+        {/* Login Text (Inactive) */}
         <div
-          className="text-txt flex-1 py-2 text-center font-bold opacity-50 cursor-pointer"
+          className="relative z-10 flex-1 flex items-center justify-center text-txt opacity-50 font-bold cursor-pointer hover:opacity-80 transition-opacity"
           onClick={() => navigate("/login")}
         >
           Login
         </div>
-        <div className="bg-[#4a90e2] text-txt flex-1 py-2 text-center font-bold rounded-[20px]">
+        
+        {/* Register Text (Active) */}
+        <div className="relative z-10 flex-1 flex items-center justify-center text-txt font-bold cursor-default">
           Register
         </div>
       </div>
@@ -162,6 +184,12 @@ function RegisterCard() {
             setPassword(e.target.value)
           }
         />
+
+        {password.length > 0 && password.length < 8 && (
+          <p className="text-xs text-red-500 font-bold text-left mt-1 ml-1">
+            ✗ Password must be at least 8 characters
+          </p>
+        )}
 
         {/* For Visual Password Validation */}
         {password && !confirmPassword && (
@@ -236,37 +264,59 @@ function RegisterCard() {
         )}
       </div>
 
-      <div className="w-full flex items-start gap-2 mb-6 px-1">
+      {/* Terms & Conditions Checkbox Area */}
+      <div className="w-full flex items-start gap-2 mb-6 px-1 mt-4">
         <input
           type="checkbox"
           id="terms"
           checked={agreedToTerms}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setAgreedToTerms(e.target.checked)
-          }
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            if (e.target.checked) {
+              // If they try to check it, open the modal instead
+              setIsTermsModalOpen(true);
+            } else {
+              // Allow them to uncheck it
+              setAgreedToTerms(false);
+            }
+          }}
           className="mt-1 cursor-pointer accent-primary w-4 h-4"
-        />{" "}
+        />
         <label
           htmlFor="terms"
-          className="text-xs text-left text-txt/80 cursor-pointer select-none"
+          className="text-xs text-left text-txt/80 cursor-pointer select-none mt-1"
         >
           I agree to the{" "}
-          <span className="text-primary font-bold hover:underline">
+          <span
+            className="text-primary font-bold hover:underline cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault(); // Prevents double toggling the checkbox
+              setIsTermsModalOpen(true);
+            }}
+          >
             Terms & Conditions
-          </span>{" "}
-          and{" "}
-          <span className="text-primary font-bold hover:underline">
-            Privacy Policy
           </span>
-          .
         </label>
       </div>
+
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onAccept={() => {
+          setAgreedToTerms(true);
+          setIsTermsModalOpen(false);
+        }}
+      />
 
       {/* Universal Button triggers handleRegister */}
       <UniversalButton
         type="submit"
         content={loading ? "Signing Up..." : "Sign Up"}
         onClick={handleRegister}
+        disabled={
+          loading || 
+          !!emailError || 
+          password.length < 8 || 
+          (password.length > 0 && confirmPassword.length > 0 && password !== confirmPassword)
+        }
       />
 
       <p className="text-sm my-4 font-bold"> --OR--</p>

@@ -1,11 +1,5 @@
-import { type Task } from "@/components/dashboard/DashboardCard";
 import { AnimatePresence, motion } from "framer-motion";
-
-interface ViewTaskModalProps {
-  isOpen: boolean;
-  task: Task | null;
-  onClose: () => void;
-}
+import type { ViewTaskModalProps } from "@/types/dashboard";
 
 const ViewTaskModal = ({ isOpen, task, onClose }: ViewTaskModalProps) => {
   return (

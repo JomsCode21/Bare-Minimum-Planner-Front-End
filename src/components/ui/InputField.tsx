@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import type { InputHTMLAttributes } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-
-interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  icon?: React.ReactNode;
-  type?: "text" | "email" | "password" | "number";
-}
+import type { InputFieldProps } from "@/types/ui";
 
 const InputField: React.FC<InputFieldProps> = ({
   icon,

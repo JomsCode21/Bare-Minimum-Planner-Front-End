@@ -1,14 +1,12 @@
 import InputField from "@/components/ui/InputField";
-import axios, { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { FaKey } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
-
-interface ResetPasswordCardProps {
-  userId: string;
-}
+import type { ResetPasswordCardProps } from "@/types/forgotpassword";
+import { resetPassword } from "@/api/auth";
 
 function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
   const navigate = useNavigate();
@@ -32,9 +30,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
     try {
       setLoading(true);
 
-      await axios.put(`/api/users/${userId}`, {
-        password: newPassword,
-      });
+      await resetPassword(userId, newPassword);
 
       toast.success("Password reset successful!");
       navigate("/login");
@@ -89,6 +85,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
         type="submit"
         content={loading ? "Resetting..." : "Reset Password"}
         onClick={handleReset}
+        disabled={loading}
       />
     </div>
   );

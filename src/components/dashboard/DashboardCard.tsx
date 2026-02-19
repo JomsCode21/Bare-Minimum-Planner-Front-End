@@ -1,27 +1,17 @@
 import { FaPen, FaTrash } from "react-icons/fa6";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import type { DashboardCardProps } from "@/types/dashboard";
 
-// Define the Task interface here so it can be imported elsewhere if needed
-export interface Task {
-  _id: string;
-  title: string;
-  description?: string;
-  isCompleted: boolean;
-}
-
-interface DashboardCardProps {
-  task: Task;
-  onDelete: (id: string) => void;
-  onToggle: (task: Task) => void;
-  onEdit: (task: Task) => void;
-}
-
-function DashboardCard({ task, onDelete, onToggle, onEdit }: DashboardCardProps) { 
+function DashboardCard({
+  task,
+  onDelete,
+  onToggle,
+  onEdit,
+}: DashboardCardProps) {
   return (
     <div className="bg-white/90 backdrop-blur-sm p-4 rounded-[15px] flex items-center justify-between shadow-sm mb-3 group hover:shadow-md transition-all">
       {/* Left: Checkbox & Title */}
       <div className="flex items-center gap-3 overflow-hidden">
-
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -43,10 +33,13 @@ function DashboardCard({ task, onDelete, onToggle, onEdit }: DashboardCardProps)
 
       {/* Edit and Delete Buttoon */}
       <div className="flex items-center gap-4 text-gray-600">
-        <button className="hover:text-black transition" onClick={(e) => {
-          e.stopPropagation();
-          onEdit(task);
-        }}>
+        <button
+          className="hover:text-black transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(task);
+          }}
+        >
           <FaPen size={16} />
         </button>
 

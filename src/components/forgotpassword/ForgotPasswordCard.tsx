@@ -1,10 +1,11 @@
 import InputField from "@/components/ui/InputField";
-import axios, { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { IoMdMail } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
+import { forgotPassword } from "@/api/auth";
 
 function ForgotPasswordCard() {
   const navigate = useNavigate();
@@ -21,9 +22,7 @@ function ForgotPasswordCard() {
     try {
       setLoading(true);
 
-      await axios.post("/api/users/forgotpassword", {
-        email,
-      });
+      await forgotPassword(email);
       navigate("/login");
     } catch (error: unknown) {
       console.error(error);
@@ -62,6 +61,7 @@ function ForgotPasswordCard() {
         type="submit"
         content={loading ? "Checking..." : "Find Account"}
         onClick={handleFindAccount}
+        disabled={loading}
       />
     </div>
   );
