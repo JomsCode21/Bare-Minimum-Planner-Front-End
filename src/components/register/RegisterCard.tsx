@@ -8,12 +8,15 @@ import { SiApple } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
-import { checkEmail, register } from "@/api/auth";
+import { checkEmail, register, googleLogin as googleLoginApi } from "@/api/auth";
 import TermsModal from "./TermsModal";
 import { motion } from "framer-motion";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useAuthStore } from "@/store/authStore";
 
 function RegisterCard() {
   const navigate = useNavigate();
+  const { login } = useAuthStore();
 
   // State for input fields
   const [name, setName] = useState("");
@@ -21,6 +24,7 @@ function RegisterCard() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false); // For prevention of multiple clicks
+  const [success, setSuccess] = useState(false); // For locking the form on success
 
   // State for terms and condition
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -102,6 +106,35 @@ function RegisterCard() {
       setLoading(false);
     }
   };
+
+  // Google Login Handler
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+        // Send the Google access token to your backend
+        const response = await googleLoginApi(tokenResponse.access_token);
+
+        // Save user to Zustand store
+        login(response.data.user);
+
+        // Trigger success states
+        setSuccess(true);
+        toast.success("Welcome to Bare Minimum Planner via Google!");
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000); // Delay navigation to allow success message to be seen
+      }catch (error) {
+        console.error("Google Registration Error:", error);
+        setLoading(false);
+        toast.error("Failed to register with Google.");
+      }
+    },
+    onError: () => {
+      toast.error("Google authentication was unsuccessful. Please try again.");
+    }
+  });
 
   return (
     <div className="bg-bg w-87.5 rounded-[40px] p-10 flex flex-col items-center shadow-lg">
@@ -309,10 +342,11 @@ function RegisterCard() {
       {/* Universal Button triggers handleRegister */}
       <UniversalButton
         type="submit"
-        content={loading ? "Signing Up..." : "Sign Up"}
+        content={success ? "Success!" : loading ? "Signing Up..." : "Sign Up"}
         onClick={handleRegister}
         disabled={
           loading || 
+          success ||
           !!emailError || 
           password.length < 8 || 
           (password.length > 0 && confirmPassword.length > 0 && password !== confirmPassword)
@@ -322,7 +356,7 @@ function RegisterCard() {
       <p className="text-sm my-4 font-bold"> --OR--</p>
 
       {/* For Socials Login Section */}
-      <div className="flex space-x-11 text-4xl">
+      <div className="flex space-x-11 text-4xl" onClick={() => handleGoogleLogin()}>
         <button className="hover:opacity-70">
           <FcGoogle />
         </button>

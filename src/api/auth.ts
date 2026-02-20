@@ -1,5 +1,7 @@
+// This file contains all the API calls related to authentication and user management.
 import apiClient from "@/axios/axios-instance";
 
+// API calls for user authentication and management
 export const checkAuth = () => apiClient.get("/api/users/check-auth");
 
 export const login = (email: string, password: string) =>
@@ -18,3 +20,6 @@ export const forgotPassword = (email: string) =>
 
 export const resetPassword = (userId: string, password: string) =>
   apiClient.put(`/api/users/${userId}`, { password });
+
+export const googleLogin = (token: string) =>
+  apiClient.post("/api/users/google", { token });

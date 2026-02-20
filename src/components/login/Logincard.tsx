@@ -9,9 +9,10 @@ import { toast } from "react-toastify";
 import InputField from "../ui/InputField";
 import UniversalButton from "../ui/UniversalButton";
 import { motion } from "framer-motion";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import { useAuthStore } from "@/store/authStore";
-import { login as loginApi } from "@/api/auth";
+import { login as loginApi, googleLogin as googleLoginApi } from "@/api/auth";
 
 function LoginCard() {
   const navigate = useNavigate();
@@ -61,6 +62,35 @@ function LoginCard() {
       }
     } 
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+        // Send the Google access token to your backend
+        const response = await googleLoginApi(tokenResponse.access_token);
+        
+        // Save user to Zustand store
+        login(response.data.user);
+        
+        // Trigger success states
+        setSuccess(true);
+        toast.success("Welcome back via Google!");
+
+        // Wait 1 second before navigating
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000); 
+      } catch (error) {
+        console.error("Google Login Error:", error);
+        setLoading(false);
+        toast.error("Failed to authenticate with Google.");
+      }
+    },
+    onError: () => {
+      toast.error("Google login was canceled or failed.");
+    }
+  });
 
   return (
     <div className="bg-bg w-87.5 rounded-[20px] p-8 flex flex-col items-center shadow-lg">
@@ -143,7 +173,8 @@ function LoginCard() {
 
       {/* Socials */}
       <div className="flex space-x-11 text-4xl">
-        <button className="hover:opacity-70 disabled:opacity-50" disabled={loading || success}>
+        <button className="hover:opacity-70 disabled:opacity-50" 
+          disabled={loading || success} onClick={() => handleGoogleLogin()}>
           <FcGoogle />
         </button>
         <button className="hover:opacity-70 disabled:opacity-50" disabled={loading || success}>
