@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaCloud } from "react-icons/fa6";
 import type { DeleteSuccessModalProps } from "@/types/dashboard";
 
 const DeleteSuccessModal = ({
@@ -22,35 +23,28 @@ const DeleteSuccessModal = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center">
-          {/* Background Overlay */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-primary flex flex-col items-center justify-center text-bg"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-primary px-4 text-bg"
           >
-            {/* Cloud */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-[250px] mb-30 drop-shadow-lg"
+              className="mb-12 text-[140px] drop-shadow-lg sm:mb-16 sm:text-[220px]"
             >
-              ☁️
+              <FaCloud />
             </motion.div>
 
-            {/*  Flying Animation */}
             {!showAdios ? (
               <motion.h2
                 initial={{ y: 100, scale: 1, opacity: 1 }}
-                animate={{
-                  y: -100,
-                  scale: 0,
-                  opacity: 0,
-                }}
+                animate={{ y: -100, scale: 0, opacity: 0 }}
                 transition={{ duration: 1.2, ease: "easeInOut" }}
-                className="text-3xl font-bold text-center px-4 absolute"
+                className="absolute px-4 text-center text-2xl font-bold sm:text-3xl"
               >
                 {taskTitle}
               </motion.h2>
@@ -58,14 +52,15 @@ const DeleteSuccessModal = ({
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="flex flex-col items-center text-center z-10"
+                className="z-10 flex flex-col items-center text-center"
               >
-                <p className="text-2xl italic mb-8 opacity-90">
+                <p className="mb-8 text-xl italic opacity-90 sm:text-2xl">
                   Adios, Obligation.
                 </p>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="bg-bg text-primary px-12 py-3 rounded-full font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-transform"
+                  className="rounded-full bg-bg px-8 py-3 text-lg font-bold text-primary shadow-xl transition-transform hover:scale-105 active:scale-95 sm:px-12 sm:text-xl"
                 >
                   Okay
                 </button>

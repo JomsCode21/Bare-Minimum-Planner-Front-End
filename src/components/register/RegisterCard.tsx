@@ -137,10 +137,10 @@ function RegisterCard() {
   });
 
   return (
-    <div className="bg-bg w-87.5 rounded-[40px] p-10 flex flex-col items-center shadow-lg">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[28px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-8 md:max-w-lg md:rounded-[40px] md:p-10">
       
       {/* Toggle Button (Sliding Animation) */}
-      <div className="relative flex bg-gray-300 rounded-full w-full mb-6 p-1 shadow-inner h-11">
+      <div className="relative mb-6 flex h-11 w-full rounded-full bg-gray-300 p-1 shadow-inner">
         {/* The Sliding Background Pill */}
         <motion.div
           initial={{ x: "-100%" }} // Fakes coming from the Login side
@@ -353,17 +353,21 @@ function RegisterCard() {
         }
       />
 
-      <p className="text-sm my-4 font-bold"> --OR--</p>
+      <p className="my-4 text-sm font-bold">-- OR --</p>
 
       {/* For Socials Login Section */}
-      <div className="flex space-x-11 text-4xl" onClick={() => handleGoogleLogin()}>
-        <button className="hover:opacity-70">
+      <div className="flex w-full items-center justify-center gap-6 text-3xl sm:gap-10 sm:text-4xl">
+        <button
+          type="button"
+          className="hover:opacity-70"
+          onClick={() => handleGoogleLogin()}
+        >
           <FcGoogle />
         </button>
-        <button className="hover:opacity-70">
+        <button type="button" className="hover:opacity-70">
           <FaFacebook />
         </button>
-        <button className="hover:opacity-70">
+        <button type="button" className="hover:opacity-70">
           <SiApple />
         </button>
       </div>

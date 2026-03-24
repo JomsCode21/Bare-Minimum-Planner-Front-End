@@ -93,10 +93,10 @@ function LoginCard() {
   });
 
   return (
-    <div className="bg-bg w-87.5 rounded-[20px] p-8 flex flex-col items-center shadow-lg">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[20px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-8">
       
       {/* Toggle Button (Sliding Animation) */}
-      <div className="relative flex bg-gray-300 rounded-full w-full mb-6 p-1 shadow-inner h-11">
+      <div className="relative mb-6 flex h-11 w-full rounded-full bg-gray-300 p-1 shadow-inner">
         {/* The Sliding Background Pill */}
         <motion.div
           initial={{ x: "100%" }} // Fakes coming from the Register side (right)
@@ -155,7 +155,7 @@ function LoginCard() {
           type="button" 
           onClick={() => navigate("/forgotpassword")}
           disabled={loading || success}
-          className="text-red-500 text-[14px] cursor-pointer font-semibold self-end mt-2 mb-6 hover:underline"
+          className="mt-2 mb-6 self-end text-sm font-semibold text-red-500 transition-opacity hover:underline disabled:cursor-not-allowed disabled:opacity-60"
         >
           Forgot Password
         </button>
@@ -169,18 +169,30 @@ function LoginCard() {
         />
       </form>
 
-      <p className="text-sm my-4 font-bold"> --OR--</p>
+      <p className="my-4 text-sm font-bold">-- OR --</p>
 
       {/* Socials */}
-      <div className="flex space-x-11 text-4xl">
-        <button className="hover:opacity-70 disabled:opacity-50" 
-          disabled={loading || success} onClick={() => handleGoogleLogin()}>
+      <div className="flex w-full items-center justify-center gap-6 text-3xl sm:gap-10 sm:text-4xl">
+        <button
+          type="button"
+          className="hover:opacity-70 disabled:opacity-50"
+          disabled={loading || success}
+          onClick={() => handleGoogleLogin()}
+        >
           <FcGoogle />
         </button>
-        <button className="hover:opacity-70 disabled:opacity-50" disabled={loading || success}>
+        <button
+          type="button"
+          className="hover:opacity-70 disabled:opacity-50"
+          disabled={loading || success}
+        >
           <FaFacebook />
         </button>
-        <button className="hover:opacity-70 disabled:opacity-50" disabled={loading || success}>
+        <button
+          type="button"
+          className="hover:opacity-70 disabled:opacity-50"
+          disabled={loading || success}
+        >
           <SiApple />
         </button>
       </div>

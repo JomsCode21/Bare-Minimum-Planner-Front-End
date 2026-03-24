@@ -11,7 +11,7 @@ const UniversalButton: React.FC<UniversalButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`bg-gray-300 px-10 py-2 rounded-full font-bold text-sm shadow-sm mb-4 cursor-pointer ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+      className={`mb-4 w-full max-w-xs cursor-pointer rounded-full bg-gray-300 px-6 py-3 text-sm font-bold shadow-sm transition-colors sm:max-w-sm sm:text-base ${disabled ? "cursor-not-allowed opacity-60" : "hover:bg-gray-200"}`}
     >
       {content}
     </button>

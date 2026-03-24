@@ -14,19 +14,19 @@ const InputField: React.FC<InputFieldProps> = ({
   const inputType = isPassword && showPassword ? "text" : type;
 
   return (
-    <div className="flex items-center bg-white border black rounded-full px-4 py-2 mb-3">
-      {icon && <span className="mr-2">{icon}</span>}
+    <div className="flex w-full items-center rounded-full border border-black/10 bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3">
+      {icon && <span className="mr-2 shrink-0 text-base sm:text-lg">{icon}</span>}
       <input
         type={inputType}
         placeholder={placeholder}
-        className="w-full text-sm bg-transparent outline-none"
+        className="w-full min-w-0 bg-transparent text-base outline-none sm:text-sm"
         {...rest}
       />
       {isPassword && (
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="ml-3 cursor-pointer"
+          className="ml-3 shrink-0 cursor-pointer text-base sm:text-lg"
         >
           {showPassword ? (
             <AiFillEye size={18} />

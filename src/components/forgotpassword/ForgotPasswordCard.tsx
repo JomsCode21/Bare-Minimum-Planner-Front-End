@@ -1,11 +1,13 @@
 import InputField from "@/components/ui/InputField";
+import { forgotPassword } from "@/api/auth";
+import Email from "@/assets/dotlottie/email.lottie?url";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { IoMdMail } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
-import { forgotPassword } from "@/api/auth";
 
 function ForgotPasswordCard() {
   const navigate = useNavigate();
@@ -39,13 +41,21 @@ function ForgotPasswordCard() {
   };
 
   return (
-    <div className="bg-bg w-87.5 rounded-[20px] p-8 flex flex-col items-center shadow-lg text-center">
-      <h3 className="font-bold text-txt text-[16.4px] mb-4">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[20px] bg-bg p-5 text-center shadow-lg sm:max-w-md sm:p-8">
+      <div className="mb-2 h-28 w-28 sm:h-32 sm:w-32">
+        <DotLottieReact
+          src={Email}
+          loop
+          autoplay
+          className="h-full w-full"
+        />
+      </div>
+      <h3 className="mb-4 text-base font-bold text-txt sm:text-lg">
         "It happens. Let's get you back in."
       </h3>
-      <p className="text-xl mb-8 font-extrabold">¯\_(ツ)_/¯</p>
+      <p className="mb-6 text-lg font-extrabold sm:mb-8 sm:text-xl">¯\_(ツ)_/¯</p>
 
-      <div className="w-full mb-8">
+      <div className="mb-8 w-full">
         <InputField
           type="email"
           icon={<IoMdMail />}

@@ -9,32 +9,34 @@ function DashboardCard({
   onEdit,
 }: DashboardCardProps) {
   return (
-    <div className="bg-white/90 backdrop-blur-sm p-4 rounded-[15px] flex items-center justify-between shadow-sm mb-3 group hover:shadow-md transition-all">
-      {/* Left: Checkbox & Title */}
-      <div className="flex items-center gap-3 overflow-hidden">
+    <div className="group mb-3 flex items-start justify-between rounded-[15px] bg-white/90 p-3 shadow-sm backdrop-blur-sm transition-all hover:shadow-md sm:items-center sm:p-4">
+      <div className="flex min-w-0 items-start gap-3 overflow-hidden sm:items-center">
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onToggle(task);
           }}
-          className="text-2xl text-black hover:text-primary transition"
+          className="shrink-0 text-2xl text-black transition hover:text-primary"
         >
           {task.isCompleted ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />}
         </button>
 
-        <div className="flex flex-col">
+        <div className="min-w-0">
           <span
-            className={`font-bold text-sm truncate ${task.isCompleted ? "line-through text-gray-400" : "text-black"}`}
+            className={`block break-words text-sm font-bold sm:text-base ${
+              task.isCompleted ? "text-gray-400 line-through" : "text-black"
+            }`}
           >
             {task.title}
           </span>
         </div>
       </div>
 
-      {/* Edit and Delete Buttoon */}
-      <div className="flex items-center gap-4 text-gray-600">
+      <div className="ml-3 flex shrink-0 items-center gap-3 text-gray-600 sm:gap-4">
         <button
-          className="hover:text-black transition"
+          type="button"
+          className="transition hover:text-black"
           onClick={(e) => {
             e.stopPropagation();
             onEdit(task);
@@ -44,11 +46,12 @@ function DashboardCard({
         </button>
 
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(task._id);
           }}
-          className="hover:text-red-500 transition"
+          className="transition hover:text-red-500"
         >
           <FaTrash size={16} />
         </button>

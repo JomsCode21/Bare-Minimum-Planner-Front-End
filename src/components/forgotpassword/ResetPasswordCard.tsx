@@ -1,3 +1,5 @@
+import { resetPassword } from "@/api/auth";
+import type { ResetPasswordCardProps } from "@/types/forgotpassword";
 import InputField from "@/components/ui/InputField";
 import { isAxiosError } from "axios";
 import { useState } from "react";
@@ -5,8 +7,6 @@ import { FaKey } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
-import type { ResetPasswordCardProps } from "@/types/forgotpassword";
-import { resetPassword } from "@/api/auth";
 
 function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
   const [loading, setLoading] = useState(false);
 
   const handleReset = async () => {
-    // Basic Validation
     if (!newPassword || !confirmPassword) {
       toast.warn("Please fill in both fields.");
       return;
@@ -49,14 +48,13 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
   };
 
   return (
-    <div className="bg-bg w-87.5 rounded-[20px] p-8 flex flex-col items-center shadow-lg text-center">
-      <h3 className="font-bold text-txt text-[16.4px] mb-4">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[20px] bg-bg p-5 text-center shadow-lg sm:max-w-md sm:p-8">
+      <h3 className="mb-4 text-base font-bold text-txt sm:text-lg">
         "It happens. Let's get you back in."
       </h3>
-      <p className="text-xl mb-8 font-extrabold">¯\_(ツ)_/¯</p>
+      <p className="mb-6 text-lg font-extrabold sm:mb-8 sm:text-xl">¯\_(ツ)_/¯</p>
 
-      {/* New Password Input */}
-      <div className="w-full mb-4">
+      <div className="mb-4 w-full">
         <InputField
           icon={<FaKey />}
           type="password"
@@ -68,8 +66,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
         />
       </div>
 
-      {/* Confirm Password Input */}
-      <div className="w-full mb-8">
+      <div className="mb-8 w-full">
         <InputField
           icon={<FaKey />}
           type="password"

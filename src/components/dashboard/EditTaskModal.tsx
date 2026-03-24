@@ -15,8 +15,7 @@ function EditTaskModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!task) return;
-    if (loading) return;
+    if (!task || loading) return;
 
     setLoading(true);
     try {
@@ -28,44 +27,48 @@ function EditTaskModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 backdrop-blur-sm">
-      <div className="bg-linear-to-t from-primary to-bg2 rouded-[20px] w-full max-w-sm overflow-hidden shadow-2xl border-4 border-[#357abd] rounded-[20px]">
-        <div className="bg-[#8ab4f8] p-4 text-center border-b border-[#6ea8fe]">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-4 py-4 backdrop-blur-sm sm:items-center sm:px-6">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-hidden rounded-[24px] border-4 border-[#357abd] bg-linear-to-t from-primary to-bg2 shadow-2xl sm:rounded-[30px]">
+        <div className="border-b border-[#6ea8fe] bg-[#8ab4f8] p-4 text-center sm:p-5">
           <h2 className="text-lg font-bold text-txt">
             Polish the Bare Minimum
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5">
+        <form
+          onSubmit={handleSubmit}
+          className="flex max-h-[calc(100dvh-8rem)] flex-col gap-5 overflow-y-auto p-5 sm:p-6"
+        >
           <div>
-            <label className="block text-sm font-bold text-txt mb-2 ml-2">
+            <label className="mb-2 ml-2 block text-sm font-bold text-txt">
               Title
             </label>
             <input
               type="text"
-              className="w-full bg-bg p-3 rounded-full text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8]"
+              className="w-full rounded-full bg-bg p-3 text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8]"
               placeholder="What I'm Supposed to Do"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
+
           <div>
-            <label className="block text-sm font-bold text-[#333] mb-2 ml-2">
+            <label className="mb-2 ml-2 block text-sm font-bold text-[#333]">
               Description
             </label>
             <textarea
-              className="w-full bg-bg p-3 rounded-[20px] text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8] resize-none h-20 pt-4"
+              className="min-h-24 w-full resize-none rounded-[20px] bg-bg p-3 pt-4 text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8]"
               placeholder="Extra Context (Optional, Obviously)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          <div className="flex gap-4 mt-2">
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-bg2 hover:bg-white text-txt font-bold py-3 rounded-full transition"
+              className="flex-1 rounded-full bg-bg2 py-3 font-bold text-txt transition hover:bg-white"
             >
               {loading ? "..." : "Update"}
             </button>
@@ -73,7 +76,7 @@ function EditTaskModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 bg-bg2 hover:bg-white text-txt font-bold py-3 rounded-full transition"
+              className="flex-1 rounded-full bg-bg2 py-3 font-bold text-txt transition hover:bg-white"
             >
               Cancel
             </button>
