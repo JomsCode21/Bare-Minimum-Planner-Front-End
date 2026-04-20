@@ -18,6 +18,7 @@ export const checkEmail = (email: string) =>
 export const register = (name: string, email: string, password: string) =>
   apiClient.post("/api/users/register", { name, email, password });
 
+// API calls for password reset process
 export const forgotPassword = (email: string) =>
   apiClient.post("/api/users/forgotpassword", { email });
 
