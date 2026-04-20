@@ -10,6 +10,7 @@ export const login = (email: string, password: string) =>
 
 export const logout = () => apiClient.post("/api/users/logout");
 
+// API calls for checking email
 export const checkEmail = (email: string) =>
   apiClient.post("/api/users/check-email", { email });
 
