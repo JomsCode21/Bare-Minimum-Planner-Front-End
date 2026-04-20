@@ -12,6 +12,7 @@ export const logout = () => apiClient.post("/api/users/logout");
 export const checkEmail = (email: string) =>
   apiClient.post("/api/users/check-email", { email });
 
+// API calls for user registration process
 export const register = (name: string, email: string, password: string) =>
   apiClient.post("/api/users/register", { name, email, password });
 
