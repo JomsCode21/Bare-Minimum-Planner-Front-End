@@ -4,6 +4,7 @@ import apiClient from "@/axios/axios-instance";
 // API calls for user authentication and management
 export const checkAuth = () => apiClient.get("/api/users/check-auth");
 
+// API calls for user login
 export const login = (email: string, password: string) =>
   apiClient.post("/api/users/login", { email, password });
 
