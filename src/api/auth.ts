@@ -8,6 +8,7 @@ export const checkAuth = () => apiClient.get("/api/users/check-auth");
 export const login = (email: string, password: string) =>
   apiClient.post("/api/users/login", { email, password });
 
+// API calls for logging out the user
 export const logout = () => apiClient.post("/api/users/logout");
 
 // API calls for checking email
