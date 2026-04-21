@@ -23,6 +23,7 @@ export const register = (name: string, email: string, password: string) =>
 export const forgotPassword = (email: string) =>
   apiClient.post("/api/users/forgotpassword", { email });
 
+// API calls for ressetting password
 export const resetPassword = (userId: string, password: string) =>
   apiClient.put(`/api/users/${userId}`, { password });
 
