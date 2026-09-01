@@ -4,6 +4,7 @@ import type { AddTaskModalProps } from "@/types/dashboard";
 function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [dueAt, setDueAt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -14,9 +15,10 @@ function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
 
     setIsSubmitting(true);
     try {
-      await onAdd(title, description);
+      await onAdd(title, description, dueAt || undefined);
       setTitle("");
       setDescription("");
+      setDueAt("");
       onClose();
     } finally {
       setIsSubmitting(false);
@@ -48,6 +50,21 @@ function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+          </div>
+
+          <div>
+            <label className="mb-2 ml-2 block text-sm font-bold text-[#333]">
+              Due date &amp; time <span className="font-normal">(optional)</span>
+            </label>
+            <input
+              type="datetime-local"
+              className="w-full rounded-full bg-bg p-3 text-center text-sm font-medium shadow-inner outline-none focus:ring-4 focus:ring-[#8ab4f8]"
+              value={dueAt}
+              onChange={(e) => setDueAt(e.target.value)}
+            />
+            <p className="mt-2 text-center text-xs text-[#555]">
+              Enable reminders after saving to get a push 15 minutes before it is due.
+            </p>
           </div>
 
           <div>

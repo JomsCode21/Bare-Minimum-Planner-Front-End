@@ -8,6 +8,13 @@ function DashboardCard({
   onToggle,
   onEdit,
 }: DashboardCardProps) {
+  const dueDateLabel = task.dueAt
+    ? new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(task.dueAt))
+    : null;
+
   return (
     <div className="group mb-3 flex items-start justify-between rounded-[15px] bg-white/90 p-3 shadow-sm backdrop-blur-sm transition-all hover:shadow-md sm:items-center sm:p-4">
       <div className="flex min-w-0 items-start gap-3 overflow-hidden sm:items-center">
@@ -30,6 +37,11 @@ function DashboardCard({
           >
             {task.title}
           </span>
+          {dueDateLabel && (
+            <span className="mt-1 block text-xs font-medium text-[#555]">
+              Due {dueDateLabel}
+            </span>
+          )}
         </div>
       </div>
 

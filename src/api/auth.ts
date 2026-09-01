@@ -28,3 +28,6 @@ export const resetPassword = (userId: string, password: string) =>
 
 export const googleLogin = (token: string) =>
   apiClient.post("/api/users/google", { token });
+
+export const savePushSubscription = (subscription: PushSubscriptionJSON) =>
+  apiClient.post("/api/users/push-subscriptions", subscription);

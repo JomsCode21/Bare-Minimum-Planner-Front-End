@@ -1,6 +1,14 @@
 import { useState } from "react";
 import type { EditTaskModalProps } from "@/types/dashboard";
 
+const toDateTimeLocal = (value?: string) => {
+  if (!value) return "";
+
+  const date = new Date(value);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return localDate.toISOString().slice(0, 16);
+};
+
 function EditTaskModal({
   isOpen,
   onClose,
@@ -9,6 +17,7 @@ function EditTaskModal({
 }: EditTaskModalProps) {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
+  const [dueAt, setDueAt] = useState(toDateTimeLocal(task?.dueAt));
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -19,7 +28,7 @@ function EditTaskModal({
 
     setLoading(true);
     try {
-      await onUpdate(task._id, title, description);
+      await onUpdate(task._id, title, description, dueAt || null);
       onClose();
     } finally {
       setLoading(false);
@@ -49,6 +58,18 @@ function EditTaskModal({
               placeholder="What I'm Supposed to Do"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 ml-2 block text-sm font-bold text-[#333]">
+              Due date &amp; time <span className="font-normal">(optional)</span>
+            </label>
+            <input
+              type="datetime-local"
+              className="w-full rounded-full bg-bg p-3 text-center text-sm outline-none focus:ring-4 focus:ring-[#8ab4f8]"
+              value={dueAt}
+              onChange={(e) => setDueAt(e.target.value)}
             />
           </div>
 

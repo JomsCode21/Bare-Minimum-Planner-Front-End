@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
+import { FaBell, FaPlus } from "react-icons/fa6";
 import { ImExit } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import ViewTaskModal from "@/components/dashboard/ViewTaskModal";
 import { useAuthStore } from "@/store/authStore";
 import { useTaskStore } from "@/store/taskStore";
 import type { Task } from "@/types/task";
+import { enableTaskReminders } from "@/utils/push-notifications";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ function Dashboard() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isEnablingReminders, setIsEnablingReminders] = useState(false);
 
   useEffect(() => {
     fetchTasks();
@@ -48,9 +50,9 @@ function Dashboard() {
     setIsViewModalOpen(true);
   };
 
-  const handleAddTask = async (title: string, description: string) => {
+  const handleAddTask = async (title: string, description: string, dueAt?: string) => {
     try {
-      await addTask(title, description);
+      await addTask(title, description, dueAt);
       setIsAddModalOpen(false);
       toast.success("Another masterpiece added to the list.");
     } catch {
@@ -67,9 +69,10 @@ function Dashboard() {
     id: string,
     title: string,
     description: string,
+    dueAt?: string | null,
   ) => {
     try {
-      await updateTask(id, title, description);
+      await updateTask(id, title, description, dueAt);
       setIsEditModalOpen(false);
       toast.success("Changes saved. Pretend it was intentional.");
     } catch {
@@ -102,6 +105,28 @@ function Dashboard() {
 
   const handleToggleComplete = async (task: Task) => {
     await toggleComplete(task);
+  };
+
+  const handleEnableReminders = async () => {
+    if (isEnablingReminders) return;
+
+    setIsEnablingReminders(true);
+    try {
+      const result = await enableTaskReminders();
+      if (result === "enabled") {
+        toast.success("Reminders enabled. We will nudge you 15 minutes before a task is due.");
+      } else if (result === "denied") {
+        toast.error("Notifications are blocked. Enable them in your browser settings to receive reminders.");
+      } else if (result === "unconfigured") {
+        toast.error("Reminders are not configured yet.");
+      } else {
+        toast.error("This browser does not support push notifications.");
+      }
+    } catch {
+      toast.error("Could not enable reminders. Please try again.");
+    } finally {
+      setIsEnablingReminders(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -139,10 +164,20 @@ function Dashboard() {
             </div>
           </div>
 
-          <p className="max-w-sm text-sm text-txt/70">
-            Keep the list short, finish what matters, and call it a productive
-            day.
-          </p>
+          <div className="flex max-w-sm flex-col items-center gap-2 sm:items-end">
+            <p className="text-sm text-txt/70">
+              Keep the list short, finish what matters, and call it a productive day.
+            </p>
+            <button
+              type="button"
+              onClick={handleEnableReminders}
+              disabled={isEnablingReminders}
+              className="flex items-center gap-2 rounded-full bg-bg/70 px-3 py-2 text-xs font-bold text-txt shadow-sm transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <FaBell />
+              {isEnablingReminders ? "Enabling..." : "Enable reminders"}
+            </button>
+          </div>
         </div>
       </header>
 

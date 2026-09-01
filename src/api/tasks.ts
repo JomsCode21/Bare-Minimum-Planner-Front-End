@@ -3,11 +3,11 @@ import type { Task } from "@/types/task";
 
 export const fetchTasks = () => apiClient.get<Task[]>("/api/tasks");
 
-export const addTask = (title: string, description: string) =>
-  apiClient.post<Task>("/api/tasks", { title, description });
+export const addTask = (title: string, description: string, dueAt?: string) =>
+  apiClient.post<Task>("/api/tasks", { title, description, dueAt });
 
-export const updateTask = (id: string, title: string, description: string) =>
-  apiClient.put(`/api/tasks/${id}`, { title, description });
+export const updateTask = (id: string, title: string, description: string, dueAt?: string | null) =>
+  apiClient.put(`/api/tasks/${id}`, { title, description, dueAt });
 
 export const deleteTask = (id: string) => apiClient.delete(`/api/tasks/${id}`);
 

@@ -3,7 +3,7 @@ import type { Task } from "@/types/task";
 export interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (title: string, description: string) => Promise<void>;
+  onAdd: (title: string, description: string, dueAt?: string) => Promise<void>;
 }
 
 export interface DeleteSuccessModalProps {
@@ -29,7 +29,7 @@ export interface EditTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   task: Task | null;
-  onUpdate: (id: string, title: string, description: string) => Promise<void>;
+  onUpdate: (id: string, title: string, description: string, dueAt?: string | null) => Promise<void>;
 }
 
 export interface ViewTaskModalProps {

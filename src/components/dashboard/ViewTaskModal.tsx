@@ -29,6 +29,14 @@ const ViewTaskModal = ({ isOpen, task, onClose }: ViewTaskModalProps) => {
             <p className="mb-8 break-words text-sm font-semibold italic text-gray-800">
               {task.description}
             </p>
+            {task.dueAt && (
+              <p className="mb-8 text-sm font-bold text-primary">
+                Due {new Intl.DateTimeFormat(undefined, {
+                  dateStyle: "full",
+                  timeStyle: "short",
+                }).format(new Date(task.dueAt))}
+              </p>
+            )}
             <button
               type="button"
               onClick={onClose}
