@@ -25,9 +25,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   // Add a new task
-  addTask: async (title: string, description: string) => {
+  addTask: async (title: string, description: string, dueAt?: string) => {
     try {
-      const response = await addTaskApi(title, description);
+      const response = await addTaskApi(title, description, dueAt);
       // Add the new task to the VERY TOP of the existing list instantly
       set((state) => ({ tasks: [response.data, ...state.tasks] }));
     } catch (error) {
@@ -37,16 +37,21 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   // Edit a task
-  updateTask: async (id: string, title: string, description: string) => {
+  updateTask: async (
+    id: string,
+    title: string,
+    description: string,
+    dueAt?: string,
+  ) => {
     try {
       // Optimistic UI Update: Change it on the screen immediately before the backend even replies
       set((state) => ({
         tasks: state.tasks.map((t) =>
-          t._id === id ? { ...t, title, description } : t,
+          t._id === id ? { ...t, title, description, dueAt } : t,
         ),
       }));
       // Then send the request to the database
-      await updateTaskApi(id, title, description);
+      await updateTaskApi(id, title, description, dueAt);
     } catch (error) {
       console.error("Error updating task:", error);
       get().fetchTasks(); // If it fails, re-fetch to fix the UI

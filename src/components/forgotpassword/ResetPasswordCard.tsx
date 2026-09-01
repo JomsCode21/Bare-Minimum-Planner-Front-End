@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UniversalButton from "../ui/UniversalButton";
 
-function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
+function ResetPasswordCard({ resetToken }: ResetPasswordCardProps) {
   const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState("");
@@ -26,10 +26,15 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
       return;
     }
 
+    if (newPassword.length < 8) {
+      toast.warn("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      await resetPassword(userId, newPassword);
+      await resetPassword(resetToken, newPassword);
 
       toast.success("Password reset successful!");
       navigate("/login");
@@ -60,6 +65,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
           type="password"
           placeholder="Enter your new password"
           value={newPassword}
+          autoComplete="new-password"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setNewPassword(e.target.value)
           }
@@ -72,6 +78,7 @@ function ResetPasswordCard({ userId }: ResetPasswordCardProps) {
           type="password"
           placeholder="Confirm your new password"
           value={confirmPassword}
+          autoComplete="new-password"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setConfirmPassword(e.target.value)
           }

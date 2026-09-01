@@ -19,7 +19,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <input
         type={inputType}
         placeholder={placeholder}
-        className="w-full min-w-0 bg-transparent text-base outline-none sm:text-sm"
+        className="w-full min-w-0 bg-transparent text-base outline-none"
         {...rest}
       />
       {isPassword && (

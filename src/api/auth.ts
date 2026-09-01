@@ -10,6 +10,9 @@ export const login = (email: string, password: string) =>
 
 export const logout = () => apiClient.post("/api/users/logout");
 
+export const savePushSubscription = (subscription: PushSubscriptionJSON) =>
+  apiClient.post("/api/users/push-subscriptions", subscription);
+
 // API calls for checking email
 export const checkEmail = (email: string) =>
   apiClient.post("/api/users/check-email", { email });
@@ -22,8 +25,8 @@ export const register = (name: string, email: string, password: string) =>
 export const forgotPassword = (email: string) =>
   apiClient.post("/api/users/forgotpassword", { email });
 
-export const resetPassword = (userId: string, password: string) =>
-  apiClient.put(`/api/users/${userId}`, { password });
+export const resetPassword = (token: string, password: string) =>
+  apiClient.post(`/api/users/resetpassword/${encodeURIComponent(token)}`, { password });
 
 export const googleLogin = (token: string) =>
   apiClient.post("/api/users/google", { token });

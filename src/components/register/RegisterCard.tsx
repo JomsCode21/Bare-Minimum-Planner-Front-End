@@ -137,7 +137,7 @@ function RegisterCard() {
   });
 
   return (
-    <div className="flex w-full max-w-sm flex-col items-center rounded-[28px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-8 md:max-w-lg md:rounded-[40px] md:p-10">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[28px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-7 md:max-w-lg md:rounded-[36px] md:p-8">
       
       {/* Toggle Button (Sliding Animation) */}
       <div className="relative mb-6 flex h-11 w-full rounded-full bg-gray-300 p-1 shadow-inner">

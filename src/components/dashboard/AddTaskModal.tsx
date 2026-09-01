@@ -1,9 +1,11 @@
 import { useState } from "react";
 import type { AddTaskModalProps } from "@/types/dashboard";
+import { enablePushNotifications, toLocalDateTimeValue } from "@/utils/taskReminders";
 
 function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [dueAt, setDueAt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -12,11 +14,16 @@ function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
     e.preventDefault();
     if (!title.trim() || isSubmitting) return;
 
+    if (dueAt && new Date(dueAt).getTime() <= Date.now()) return;
+
+    if (dueAt) void enablePushNotifications().catch(() => undefined);
+
     setIsSubmitting(true);
     try {
-      await onAdd(title, description);
+      await onAdd(title, description, dueAt || undefined);
       setTitle("");
       setDescription("");
+      setDueAt("");
       onClose();
     } finally {
       setIsSubmitting(false);
@@ -25,7 +32,7 @@ function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-4 py-4 backdrop-blur-sm sm:items-center sm:px-6">
-      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-hidden rounded-[24px] border-4 border-[#357abd] bg-linear-to-t from-primary to-bg2 shadow-2xl sm:rounded-[30px]">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-hidden rounded-3xl border-4 border-[#357abd] bg-linear-to-t from-primary to-bg2 shadow-2xl sm:rounded-[30px]">
         <div className="border-b border-[#6ea8fe] bg-[#8ab4f8] p-4 text-center sm:p-5">
           <h2 className="text-lg font-bold text-txt drop-shadow-sm">
             Add Bare Minimum
@@ -48,6 +55,24 @@ function AddTaskModal({ isOpen, onClose, onAdd }: AddTaskModalProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
+          </div>
+
+          <div>
+            <label className="mb-2 ml-2 block text-sm font-bold text-[#333]">
+              Due date & time <span className="font-normal text-txt/60">(optional)</span>
+            </label>
+            <input
+              type="datetime-local"
+              min={toLocalDateTimeValue()}
+              className="w-full rounded-full bg-bg p-3 text-center text-sm font-medium shadow-inner outline-none focus:ring-4 focus:ring-[#8ab4f8]"
+              value={dueAt}
+              onChange={(e) => setDueAt(e.target.value)}
+            />
+            {dueAt && new Date(dueAt).getTime() <= Date.now() && (
+              <p className="mt-2 text-xs font-medium text-red-600">
+                Choose a time in the future.
+              </p>
+            )}
           </div>
 
           <div>

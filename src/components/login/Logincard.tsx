@@ -93,7 +93,7 @@ function LoginCard() {
   });
 
   return (
-    <div className="flex w-full max-w-sm flex-col items-center rounded-[20px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-8">
+    <div className="flex w-full max-w-sm flex-col items-center rounded-[20px] bg-bg p-5 shadow-lg sm:max-w-md sm:p-7">
       
       {/* Toggle Button (Sliding Animation) */}
       <div className="relative mb-6 flex h-11 w-full rounded-full bg-gray-300 p-1 shadow-inner">

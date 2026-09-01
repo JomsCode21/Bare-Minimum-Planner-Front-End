@@ -48,6 +48,14 @@ function App() {
   }, [checkAuth]);
 
   useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+
+    void navigator.serviceWorker.register("/sw.js").catch((error) => {
+      console.error("Service worker registration failed:", error);
+    });
+  }, []);
+
+  useEffect(() => {
     const heartbeat = setInterval(async () => {
       try {
         await checkAuthApi();

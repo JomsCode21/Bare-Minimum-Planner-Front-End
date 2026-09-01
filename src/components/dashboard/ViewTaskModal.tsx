@@ -5,7 +5,7 @@ const ViewTaskModal = ({ isOpen, task, onClose }: ViewTaskModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && task && (
-        <div className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center sm:p-6">
+        <div className="fixed inset-0 z-100 flex items-end justify-center p-4 sm:items-center sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -18,17 +18,22 @@ const ViewTaskModal = ({ isOpen, task, onClose }: ViewTaskModalProps) => {
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative w-full max-w-md rounded-[24px] bg-bg p-6 text-center shadow-2xl sm:rounded-[30px] sm:p-8"
+            className="relative w-full max-w-md rounded-3xl bg-bg p-6 text-center shadow-2xl sm:rounded-[30px] sm:p-8"
           >
             <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-gray-400">
               Bare Minimum Task
             </h3>
-            <p className="mb-6 break-words text-2xl font-bold text-gray-800 sm:mb-8 sm:text-3xl">
+            <p className="mb-6 wrap-break-words text-2xl font-bold text-gray-800 sm:mb-8 sm:text-3xl">
               {task.title}
             </p>
-            <p className="mb-8 break-words text-sm font-semibold italic text-gray-800">
+            <p className="mb-8 wrap-break-words text-sm font-semibold italic text-gray-800">
               {task.description}
             </p>
+            {task.dueAt && !Number.isNaN(new Date(task.dueAt).getTime()) && (
+              <p className="mb-6 text-sm font-semibold text-primary">
+                Due {new Date(task.dueAt).toLocaleString([], { dateStyle: "full", timeStyle: "short" })}
+              </p>
+            )}
             <button
               type="button"
               onClick={onClose}

@@ -14,6 +14,7 @@ import ViewTaskModal from "@/components/dashboard/ViewTaskModal";
 import { useAuthStore } from "@/store/authStore";
 import { useTaskStore } from "@/store/taskStore";
 import type { Task } from "@/types/task";
+import { enablePushNotifications } from "@/utils/taskReminders";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -48,9 +49,13 @@ function Dashboard() {
     setIsViewModalOpen(true);
   };
 
-  const handleAddTask = async (title: string, description: string) => {
+  const handleAddTask = async (
+    title: string,
+    description: string,
+    dueAt?: string,
+  ) => {
     try {
-      await addTask(title, description);
+      await addTask(title, description, dueAt);
       setIsAddModalOpen(false);
       toast.success("Another masterpiece added to the list.");
     } catch {
@@ -67,9 +72,10 @@ function Dashboard() {
     id: string,
     title: string,
     description: string,
+    dueAt?: string,
   ) => {
     try {
-      await updateTask(id, title, description);
+      await updateTask(id, title, description, dueAt);
       setIsEditModalOpen(false);
       toast.success("Changes saved. Pretend it was intentional.");
     } catch {
@@ -119,11 +125,24 @@ function Dashboard() {
     }
   };
 
+  const handleEnablePushNotifications = async () => {
+    try {
+      await enablePushNotifications();
+      toast.success("Push reminders are enabled on this device.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not enable push reminders.",
+      );
+    }
+  };
+
   return (
-    <div className="flex min-h-dvh flex-col overflow-hidden bg-linear-to-t from-primary to-bg2">
+    <div className="flex min-h-dvh flex-col overflow-x-hidden bg-linear-to-t from-primary to-bg2">
       <header className="w-full px-4 pt-4 sm:px-6 sm:pt-6">
         <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-4 rounded-[28px] bg-bg/20 px-4 py-4 text-center shadow-sm sm:flex-row sm:px-6 sm:text-left">
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <div className="rounded-full bg-bg/40 p-2 sm:p-3">
               <img
                 src={logo}
@@ -131,24 +150,33 @@ function Dashboard() {
                 className="h-16 w-16 object-contain sm:h-20 sm:w-20"
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm text-txt/80">Ready to barely conquer today?</p>
-              <h2 className="text-xl font-bold text-txt sm:text-2xl">
+              <h2 className="truncate text-xl font-bold text-txt sm:text-2xl">
                 {user?.name || "User"}
               </h2>
             </div>
           </div>
 
-          <p className="max-w-sm text-sm text-txt/70">
-            Keep the list short, finish what matters, and call it a productive
-            day.
-          </p>
+          <div className="flex max-w-sm flex-col items-center gap-2 sm:items-end">
+            <p className="text-sm text-txt/70">
+              Keep the list short, finish what matters, and call it a productive
+              day.
+            </p>
+            <button
+              type="button"
+              onClick={handleEnablePushNotifications}
+              className="rounded-full border border-primary/30 bg-bg/70 px-4 py-2 text-xs font-semibold text-txt shadow-sm transition hover:bg-bg"
+            >
+              Enable push reminders
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="flex min-h-0 flex-1 px-4 py-4 sm:px-6 sm:py-6">
         <div className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col">
-          <section className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden rounded-[20px] border border-white/30 bg-bg2/50 shadow-lg backdrop-blur-md sm:rounded-[24px]">
+          <section className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden rounded-[20px] border border-white/30 bg-bg2/50 shadow-lg backdrop-blur-md sm:rounded-[3xl">
             <div className="border-b border-gray-400/30 p-4 text-center sm:px-6">
               <h2 className="text-xl font-normal text-txt">Bare Minimum Tasks</h2>
               <p className="text-sm italic text-[#555]">"Just enough to survive."</p>

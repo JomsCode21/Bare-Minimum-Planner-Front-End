@@ -1,3 +1,3 @@
 export interface ResetPasswordCardProps {
-  userId: string;
+  resetToken: string;
 }
